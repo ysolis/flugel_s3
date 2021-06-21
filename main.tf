@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "flugel_s3_bucket" {
-  bucket_prefix = var.s3_prefix
-  acl           = var.s3_acl
+  bucket  = var.s3_bucket_name
+  acl     = var.s3_acl
 }
 
 resource "aws_s3_bucket_object" "flugel_s3_bucket_object" {
