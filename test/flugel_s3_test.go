@@ -17,7 +17,7 @@ func TestTerraformFlugelS3(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	output_bucket := terraform.Output(t, terraformOptions, "flugel_s3_bucket_name")
-	assert.Equal(t, output_bucket, "flugel-bucket")
+	assert.Contains(t, output_bucket, "flugel-bucket-")
 
 	output_objects := terraform.Output(t, terraformOptions, "flugel_s3_bucket_objects")
 	assert.Contains(t, output_objects, "test1.txt")
