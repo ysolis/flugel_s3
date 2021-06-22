@@ -29,4 +29,16 @@ For test we use a terratest go script to create the bucket, the bucket objects, 
 -	go mod tidy
 -	go test -v
 
+## Github Action
+
+We have defined a github action workflow to automatically check the code with the terratest go script. To use it you will need to define three repository secrets:
+-	AWS_ACCESS_KEY_ID
+-	AWS_SECRET_ACCESS_KEY
+-	AWS_DEFAULT_REGION
+
+with the same values that we see in **Setup**
+
+
+
+
 (1) https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
