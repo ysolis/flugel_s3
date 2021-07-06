@@ -1,6 +1,9 @@
 # Flugel Terraform/Github Actions task
 
-This repository contains a terraform module to build a S3 bucket with two files, test1.txt and test2.txt. The content of these files must be the timestamp when the Terraform code is executed.
+This repository contains:
+
+- a terraform module to build a S3 bucket with two files, test1.txt and test2.txt. The content of these files must be the timestamp when the Terraform code is executed.
+- two ec2 instances behind an ALB to serve the content from the S3 using traefik
 
 ## Requirements
 
