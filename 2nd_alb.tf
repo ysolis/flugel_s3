@@ -20,8 +20,8 @@ resource "aws_lb" "second" {
     load_balancer_type = "application"
     security_groups = [aws_security_group.second_alb.id]
     subnets = [
-        aws_subnet.second_one.id,
-        aws_subnet.second_two.id
+        aws_subnet.second[0].id,
+        aws_subnet.second[1].id
     ]
 }
 

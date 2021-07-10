@@ -15,24 +15,24 @@ resource "aws_route_table" "second" {
   }
 }
 
-resource "aws_subnet" "second_one" {
+resource "aws_subnet" "second" {
   vpc_id            = aws_vpc.second.id
-  cidr_block        = var.one_subnet_cidr
-  availability_zone = var.az_one
+  cidr_block        = var.subnet_cidr[count.index]
+  availability_zone = var.az[count.index]
+  count             = 2
 }
 
-resource "aws_route_table_association" "second_one" {
-  subnet_id      = aws_subnet.second_one.id
-  route_table_id = aws_route_table.second.id
+resource "aws_route_table_association" "second" {
+  subnet_id       = aws_subnet.second[count.index].id
+  route_table_id  = aws_route_table.second.id
+  count           = 2
 }
 
-resource "aws_subnet" "second_two" {
-  vpc_id            = aws_vpc.second.id
-  cidr_block        = var.two_subnet_cidr
-  availability_zone = var.az_two
+resource "aws_eip" "second" {
+  vpc = true
 }
 
-resource "aws_route_table_association" "second_two" {
-  subnet_id      = aws_subnet.second_two.id
-  route_table_id = aws_route_table.second.id
+resource "aws_nat_gateway" "second" {
+  allocation_id = aws_eip.second.id
+  subnet_id     = aws_subnet.second.*.id[0]
 }
