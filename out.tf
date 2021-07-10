@@ -7,5 +7,5 @@ output flugel_s3_bucket_objects {
 }
 
 output alb-url {
-    value = aws_lb.second.dns_name
+    value = aws_lb.alb.dns_name
 }

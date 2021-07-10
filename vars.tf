@@ -5,13 +5,10 @@ variable "filename_format" {}
 variable "file_count" {}
 
 variable "vpc_cidr" {}
-variable "one_subnet_cidr" {}
-variable "two_subnet_cidr" {}
-variable "subnet_cidr" {}
+variable "subnet_public_cidr" {}
+variable "subnet_private_cidr" {}
 
 variable "ec2_instances" {}
 
 variable "region" {}
-variable "az_one" {}
-variable "az_two" {}
 variable "az" {}

@@ -1,4 +1,4 @@
-resource "aws_security_group" "second" {
+resource "aws_security_group" "sg_ec2" {
   name = "second rules"
   vpc_id = aws_vpc.second.id
 
@@ -37,12 +37,12 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "second" {
     ami                     = data.aws_ami.ubuntu.id
     instance_type           = "t3.micro"
-    subnet_id               = aws_subnet.second[count.index].id
-    vpc_security_group_ids  = [aws_security_group.second.id]
+    subnet_id               = aws_subnet.private[count.index].id
+    vpc_security_group_ids  = [aws_security_group.sg_ec2.id]
 
     tags = {
-        Name = "second"
+        Name = "alb_node"
     }
 
-    count = 2
+    count = 0
 }
