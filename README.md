@@ -2,14 +2,18 @@
 
 This repository contains:
 
-- a terraform module to build a S3 bucket with two files, test1.txt and test2.txt. The content of these files must be the timestamp when the Terraform code is executed.
-- two ec2 instances behind an ALB to serve the content from the S3 using traefik
+- a terraform module to build:
+	-	a S3 bucket with two files, test1.txt and test2.txt. The content of these files must be the timestamp when the Terraform code is executed. (DONE)
+	-	two ec2 instances behind an ALB to serve the content from the S3 using traefik (1). (IN PROCESS)
+	- Security Rules to avoid any external access to the bucket content and only permits access from the ec2 instances behind ALB (TODO)
+
+The idea is to access via http the content of S3 buckets created  by the ALB Only
 
 ## Requirements
 
 - Terraform 1.0 (can work with Terraform 0.15, but is not guaranteed)
 - go 1.15 (for tests)
-- AWS IAM Account with permissions to manage S3 in programatic way, we will need the Access Key ID and Secret Access Key credentials associated with the account (1)
+- AWS IAM Account with permissions to manage S3 in programatic way, we will need the Access Key ID and Secret Access Key credentials associated with the account (2)
 
 ## Setup
 
@@ -21,6 +25,9 @@ This repository contains:
 	- terraform init --upgrade=true
 	- terraform plan -out run.plan
 	- terraform apply "run.plan"
+	- terraform output
+
+	the last command will show the s3 bucket url and the alb url too, you can use it (IN PROCESS) to access the content from the S3 and from the ALB url and check that any access outside the ALB is avoided (3)
 
 ## Test
 
@@ -43,5 +50,11 @@ with the same values that we see in **Setup**
 
 
 
+TODO:
+	- finish private index config
+	- finish the ALB config to use the private instances
 
-(1) https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
+
+(1) we are using docker and docker-compose to run traefik as a container in the EC2 instance
+(2) https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
+(3) by now we are deploying and EC2 instance in one of the public subnets to test first Traefik configuration

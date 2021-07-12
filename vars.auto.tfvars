@@ -11,4 +11,3 @@ subnet_private_cidr = ["10.0.0.0/24", "10.0.1.0/24"]
 ec2_instances = 2
 
 region = "us-west-2"
-az = ["us-west-2a", "us-west-2b"]

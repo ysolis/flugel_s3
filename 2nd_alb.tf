@@ -37,3 +37,5 @@ resource "aws_lb_listener" "lst_alb" {
         type = "forward"
     }
 }
+
+

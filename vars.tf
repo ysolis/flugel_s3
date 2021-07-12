@@ -11,4 +11,3 @@ variable "subnet_private_cidr" {}
 variable "ec2_instances" {}
 
 variable "region" {}
-variable "az" {}
