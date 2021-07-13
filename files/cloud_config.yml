@@ -51,10 +51,10 @@ write_files:
       http:
         routers:
           catchall:
+            rule: "PathPrefix(`/`)"
+            service: s3bucket
             entryPoints:
               - "web"
-            service: s3bucket
-            rule: "PathPrefix(`/`)"
             priority: 1
         services:
           s3bucket:

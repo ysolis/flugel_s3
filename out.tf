@@ -21,3 +21,7 @@ output public_ec2 {
 output public_dns_ec2 {
   value = aws_instance.public.public_dns
 }
+
+output private_ec2 {
+  value = aws_instance.instance.*.private_ip
+}

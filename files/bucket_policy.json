@@ -13,8 +13,10 @@
       "Condition": {
         "IpAddress": {
           "aws:SourceIp": [
-            "${first_node_ip}/32",
-            "${second_node_ip}/32"
+            %{for ip in ip_node_list ~}
+            "${ip.private_ip}/32",
+            %{endfor ~}
+            "${first_node_ip}/32"
           ]
         }
       }
