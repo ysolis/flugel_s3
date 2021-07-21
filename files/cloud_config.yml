@@ -4,6 +4,7 @@ repo_upgrade: true
 package_reboot_if_required: true
 
 packages:
+  - awscli
   - mlocate
   - docker.io
   - docker-compose
@@ -24,6 +25,13 @@ write_files:
             - "./traefik.yml:/etc/traefik/traefik.yml"
             - "./dynamic.yml:/etc/traefik/dynamic.yml"
             - "/run/docker.sock:/run/docker.sock:ro"
+        web:
+          image: "nginx:latest"
+          container_name: "nginx"
+          networks:
+            - traefik-global-proxy
+          volumes:
+            - ./src:/usr/share/nginx/html
 
       networks:
         traefik-global-proxy:
@@ -44,6 +52,9 @@ write_files:
           exposedByDefault = false
           network = "traefik-global-proxy"
 
+      log:
+        level: DEBUG
+
     path: /root/second/traefik.yml
     permissions: '0644'
 
@@ -61,7 +72,7 @@ write_files:
             loadBalancer:
               passHostHeader: false
               servers:
-                - url: https://${s3bucket}
+                - url: http://nginx/
 
     path: /root/second/dynamic.yml
     permissions: '0644'
@@ -69,4 +80,7 @@ write_files:
 runcmd:
   - usermod -aG docker ubuntu
   - cd /root/second
+  - mkdir src
+  - aws s3 cp s3://${s3bucket}/test1.txt src/
+  - aws s3 cp s3://${s3bucket}/test2.txt src/
   - docker-compose -f docker-compose.yml up -d

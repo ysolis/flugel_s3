@@ -1,7 +1,3 @@
-locals {
-  az_names = data.aws_availability_zones.azs.names
-}
-
 resource "aws_vpc" "second" {
   cidr_block            = var.vpc_cidr
   enable_dns_hostnames  = true

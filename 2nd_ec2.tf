@@ -30,45 +30,57 @@ resource "aws_security_group" "sg_ec2" {
   }
 }
 
-resource "aws_key_pair" "mykey" {
-  key_name    = "mykey"
-  public_key  = file("~/.ssh/id_rsa.pub")
+resource "aws_iam_role" "ec2_s3_access_role" {
+  name                = "s3-role"
+  path                = "/"
+  assume_role_policy  = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Principal": {
+               "Service": "ec2.amazonaws.com"
+            }
+        }
+    ]
+}
+EOF
 }
 
-resource "aws_instance" "instance" {
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name  = "ec2_profile"
+  role  = aws_iam_role.ec2_s3_access_role.name
+}
+
+resource "aws_iam_role_policy" "access_s3" {
+  name        = "acess-s3-policy"
+  role        = aws_iam_role.ec2_s3_access_role.name
+  policy      = templatefile("files/inline_policy.json",{
+    arn = aws_s3_bucket.flugel_s3_bucket.arn,
+  })
+}
+
+resource "aws_instance" "private" {
 
   depends_on              = [
-    aws_instance.public,
-    aws_nat_gateway.nat_gw
+    aws_nat_gateway.nat_gw,
+    aws_s3_bucket.flugel_s3_bucket
   ]
 
   ami                     = data.aws_ami.ubuntu.id
   instance_type           = "t3.micro"
   subnet_id               = aws_subnet.private[count.index].id
-  key_name                = aws_key_pair.mykey.key_name
   user_data               = templatefile("files/cloud_config.yml",{
-    s3bucket = aws_s3_bucket.flugel_s3_bucket.bucket_regional_domain_name
+    s3bucket = aws_s3_bucket.flugel_s3_bucket.id
   })
   vpc_security_group_ids  = [aws_security_group.sg_ec2.id]
+  iam_instance_profile    = aws_iam_instance_profile.ec2_profile.name
 
   tags = {
     Name = "alb_node"
   }
 
   count = 2
-}
-
-resource "aws_instance" "public" {
-  ami                     = data.aws_ami.ubuntu.id
-  instance_type           = "t3.micro"
-  subnet_id               = aws_subnet.public[0].id
-  key_name                = aws_key_pair.mykey.key_name
-  user_data               = templatefile("files/cloud_config.yml",{
-    s3bucket = aws_s3_bucket.flugel_s3_bucket.bucket_regional_domain_name
-  })
-  vpc_security_group_ids  = [aws_security_group.sg_ec2.id]
-
-  tags = {
-    Name = "public"
-  }
 }
